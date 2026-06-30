@@ -27,10 +27,10 @@ model Notification {
   destination String
   message     String   @db.Text()
 
-  channelId String
+  channelId Int
   channel   Channel @relation(fields: [channelId], references: [id])
 
-  statusId String
+  statusId Int
   status   Status @relation(fields: [statusId], references: [id])
 }
 
