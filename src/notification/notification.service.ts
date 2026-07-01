@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { NotificationStatus } from '@prisma/client';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ChannelType, NotificationStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { ParamsPaginationDto } from './dto/params-pagnations.dto';
@@ -85,7 +89,93 @@ export class NotificationService {
     return notification;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async cancelScheduleNotification(id: string) {
+    const notification = await this.findNotificationById(id);
+
+    if (notification.status.description === NotificationStatus.CANCELED) {
+      throw new BadRequestException('Notification is already canceled.');
+    }
+
+    const canceledStatus = await this.prisma.status.findUnique({
+      where: { description: NotificationStatus.CANCELED },
+    });
+
+    if (!canceledStatus) {
+      throw new NotFoundException('Status not found.');
+    }
+
+    await this.prisma.notification.update({
+      where: { id },
+      data: {
+        statusId: canceledStatus.id,
+      },
+    });
+
+    return `Notification successfully cancelled!`;
+  }
+
+  /**
+   * Busca notificações pendentes ou com erro cuja data <= agora,
+   * realiza o envio (simulado) e atualiza o status.
+   */
+  async checkAndSend() {
+    const now = new Date();
+
+    const pending = NotificationStatus.PENDING;
+    const error = NotificationStatus.ERROR;
+
+    // Buscar notificações pendentes ou em error com dateTime <= a data atual.
+    const notifications = await this.prisma.notification.findMany({
+      where: {
+        AND: [
+          { dateTime: { lte: now } },
+          {
+            status: {
+              description: {
+                in: [pending, error],
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        channel: true,
+        status: true,
+      },
+    });
+
+    // Processar cada notificação
+    for (const notification of notifications) {
+      await this.sendNotification(
+        notification.id,
+        notification.channel.description as ChannelType,
+      );
+    }
+  }
+
+  // Simula o envio e atualiza status (SUCCESS OU ERROR)
+  private async sendNotification(id: string, channel: ChannelType) {
+    try {
+      // TODO: desenvolver aqui o enfio conforme canal (SMS, EMAIL, etc).
+
+      console.log(`Enviado via ${channel}: notification ID: ${id}`);
+
+      // Se sucesso:
+      await this.prisma.notification.update({
+        where: { id },
+        data: {
+          status: { connect: { description: NotificationStatus.SUCCESS } },
+        },
+      });
+    } catch (error) {
+      // Em caso de erro:
+      console.log(`Falha ao enviar notificação ID: ${id}`, error);
+      await this.prisma.notification.update({
+        where: { id },
+        data: {
+          status: { connect: { description: NotificationStatus.ERROR } },
+        },
+      });
+    }
   }
 }

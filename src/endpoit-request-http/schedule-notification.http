@@ -19,3 +19,6 @@ GET {{baseUrl}}/notification
 
 ### FIND Schedule Notification Id
 GET {{baseUrl}}/notification/{{scheduleId}}
+
+### CANCEL Schedule Notification Id
+DELETE  {{baseUrl}}/notification/{{scheduleId}}
