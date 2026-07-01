@@ -7,14 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum EnumChanel {
+enum ChannelType {
   EMAIL
   SMS
   PUSH
   WHATSAPP
 }
 
-enum EnumStatus {
+enum NotificationStatus {
   PENDING
   SUCCESS
   CANCELED
@@ -32,16 +32,25 @@ model Notification {
 
   statusId Int
   status   Status @relation(fields: [statusId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([statusId, dateTime])
 }
 
 model Channel {
   id            Int            @id @default(autoincrement())
-  description   EnumChanel     @default(EMAIL)
+  description   ChannelType    @unique
   notifications Notification[]
+
+  @@index([description])
 }
 
 model Status {
-  id            Int            @id @default(autoincrement())
-  description   EnumStatus     @default(PENDING)
+  id            Int                @id @default(autoincrement())
+  description   NotificationStatus @unique
   notifications Notification[]
+
+  @@index([description])
 }

@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "EnumChanel" AS ENUM ('EMAIL', 'SMS', 'PUSH', 'WHATSAPP');
+CREATE TYPE "ChannelType" AS ENUM ('EMAIL', 'SMS', 'PUSH', 'WHATSAPP');
 
 -- CreateEnum
-CREATE TYPE "EnumStatus" AS ENUM ('PENDING', 'SUCCESS', 'CANCELED', 'ERROR');
+CREATE TYPE "NotificationStatus" AS ENUM ('PENDING', 'SUCCESS', 'CANCELED', 'ERROR');
 
 -- CreateTable
 CREATE TABLE "Notification" (
@@ -19,7 +19,7 @@ CREATE TABLE "Notification" (
 -- CreateTable
 CREATE TABLE "Channel" (
     "id" SERIAL NOT NULL,
-    "description" "EnumChanel" NOT NULL DEFAULT 'EMAIL',
+    "description" "ChannelType" NOT NULL DEFAULT 'EMAIL',
 
     CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
 );
@@ -27,7 +27,7 @@ CREATE TABLE "Channel" (
 -- CreateTable
 CREATE TABLE "Status" (
     "id" SERIAL NOT NULL,
-    "description" "EnumStatus" NOT NULL DEFAULT 'PENDING',
+    "description" "NotificationStatus" NOT NULL DEFAULT 'PENDING',
 
     CONSTRAINT "Status_pkey" PRIMARY KEY ("id")
 );

@@ -1,8 +1,8 @@
-import { $Enums } from '@prisma/client';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ChannelType } from '@prisma/client';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
 export class CreateChannelDto {
-    @IsNotEmpty()
-    @IsString()
-    description!: $Enums.EnumChanel;
+  @IsNotEmpty()
+  @IsEnum(ChannelType)
+  description!: ChannelType;
 }

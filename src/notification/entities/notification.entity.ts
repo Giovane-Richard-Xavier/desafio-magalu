@@ -1,10 +1,12 @@
-import { Notification } from "@prisma/client";
+import { Notification } from '@prisma/client';
 
 export class NotificationEntity implements Notification {
-    id!: string;
-    dateTime!: Date;
-    destination!: string;
-    message!: string;
-    channelId!: number;
-    statusId!: number;
+  id!: string;
+  dateTime!: Date;
+  destination!: string;
+  message!: string;
+  channelId!: number;
+  statusId!: number;
+  createdAt!: Date;
+  updatedAt!: Date;
 }

@@ -1,5 +1,8 @@
-import { $Enums } from "@prisma/client";
+import { NotificationStatus } from '@prisma/client';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
 export class CreateStatusDto {
-    description!: $Enums.EnumStatus;
+  @IsNotEmpty()
+  @IsEnum(NotificationStatus)
+  description!: NotificationStatus;
 }

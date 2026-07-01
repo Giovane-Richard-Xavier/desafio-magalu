@@ -1,9 +1,18 @@
-import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ChannelType } from '@prisma/client';
+import { Type } from 'class-transformer';
+import {
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateNotificationDto {
   @IsNotEmpty()
-  @IsDateString()
-  dateTime!: string;
+  @Type(() => Date)
+  @IsDate()
+  dateTime!: Date;
 
   @IsNotEmpty()
   @IsString()
@@ -14,10 +23,6 @@ export class CreateNotificationDto {
   message!: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  channelId!: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  statusId!: number;
+  @IsEnum(ChannelType)
+  channel!: ChannelType;
 }
