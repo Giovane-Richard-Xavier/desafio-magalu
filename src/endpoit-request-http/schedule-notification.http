@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:3001
+@scheduleId=
+
+########################################
+### CREATE Schedule Notification
+########################################
+POST {{baseUrl}}/notification
+Content-Type: application/json
+
+{
+  "dateTime": "2026-07-01T10:58:12",
+  "destination": "user@gmail.com",
+  "message": "Compra confirmada",
+  "channel": "EMAIL"
+}

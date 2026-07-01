@@ -7,6 +7,7 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @Post()
+  // Agenda nova notificação
   scheduleNotification(@Body() createNotificationDto: CreateNotificationDto) {
     return this.notificationService.scheduleNotification(createNotificationDto);
   }
