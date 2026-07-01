@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EnumChanel {
+  EMAIL
+  SMS
+  PUSH
+  WHATSAPP
+}
+
+enum EnumStatus {
+  PENDING
+  SUCCESS
+  CANCELED
+  ERROR
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  dateTime    DateTime
+  destination String
+  message     String   @db.Text()
+
+  channelId Int
+  channel   Channel @relation(fields: [channelId], references: [id])
+
+  statusId Int
+  status   Status @relation(fields: [statusId], references: [id])
+}
+
+model Channel {
+  id            Int            @id @default(autoincrement())
+  description   EnumChanel     @default(EMAIL)
+  notifications Notification[]
+}
+
+model Status {
+  id            Int            @id @default(autoincrement())
+  description   EnumStatus     @default(PENDING)
+  notifications Notification[]
+}
