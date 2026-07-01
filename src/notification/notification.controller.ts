@@ -1,5 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { ParamsPaginationDto } from './dto/params-pagnations.dto';
 import { NotificationService } from './notification.service';
 
 @Controller('notification')
@@ -13,13 +22,13 @@ export class NotificationController {
   }
 
   @Get()
-  findAll() {
-    return this.notificationService.findAll();
+  findAllNotifications(@Query() params: ParamsPaginationDto) {
+    return this.notificationService.findAllNotifications(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationService.findOne(+id);
+  findNotificationById(@Param('id') id: string) {
+    return this.notificationService.findNotificationById(id);
   }
 
   @Delete(':id')
